@@ -125,9 +125,25 @@ NSDictionary *toDictionary(id<FIRUserInfo> userInfo) {
                                         completion:^(FIRUser *user, NSError *error) {
                                           [self sendResult:result forUser:user error:error];
                                         }];
+  } else if ([@"updateUserProfile" isEqualToString:call.method]) {
+      [self handleUpdateUserProfileWithCall:call andResult:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
+}
+
+- (void)handleUpdateUserProfileWithCall:(FlutterMethodCall *)call andResult:(FlutterResult)result {
+    NSDictionary<NSString*, NSString*> *dict = call.arguments; //Tutaj moze byc potrzebne jakies rzutowanie, nie jestem w stanie tego sprawdzic
+    
+    FIRUserProfileChangeRequest *changeRequest = [[FIRAuth auth].currentUser profileChangeRequest];
+    if (dict[@"displayName"]) {
+        changeRequest.displayName = dict[@"displayName"]
+    }
+    if (dict[@"photoUrl"]) {
+        changeRequest.photoUrl = dict[@"photoUrl"]
+    }
+    
+    [changeRequest commitChangesWithCompletion:nil]
 }
 
 - (void)sendResult:(FlutterResult)result forUser:(FIRUser *)user error:(NSError *)error {
