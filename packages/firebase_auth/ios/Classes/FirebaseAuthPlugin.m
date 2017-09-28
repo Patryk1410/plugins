@@ -134,7 +134,9 @@ NSDictionary *toDictionary(id<FIRUserInfo> userInfo) {
       if (dict[@"photoUrl"]) {
           changeRequest.photoUrl = dict[@"photoUrl"];
       }
-      [changeRequest commitChangesWithCompletion:nil];
+      [changeRequest commitChangesWithCompletion:^(NSError *error) {
+          [self sendResult:result forUser:nil error:error];
+      }];
   } else {
     result(FlutterMethodNotImplemented);
   }
